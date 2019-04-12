@@ -9,8 +9,6 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.annotation.NonNull
 
 
-
-
 /**
  * Created by Luthfan Maftuh on 12/04/2019.
  * Email luthfanmaftuh@gmail.com
@@ -31,11 +29,12 @@ abstract class NoteDatabase : RoomDatabase() {
         fun getInstance(context: Context): NoteDatabase {
             if (instance == null) {
                 instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    NoteDatabase::class.java, "note_database"
+                        context.applicationContext,
+                        NoteDatabase::class.java, "note_database"
                 )
-                    .fallbackToDestructiveMigration()
-                    .build()
+                        .fallbackToDestructiveMigration()
+                        .addCallback(roomCallback)
+                        .build()
             }
             return instance as NoteDatabase
         }
