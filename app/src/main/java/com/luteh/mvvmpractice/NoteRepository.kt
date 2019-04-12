@@ -35,6 +35,10 @@ class NoteRepository(application: Application) {
         DeleteAllNotesAsyncTask(noteDao).execute()
     }
 
+    fun getAllNotes(): LiveData<List<Note>> {
+        return allNotes
+    }
+
     private class InsertNoteAsyncTask(private val noteDao: NoteDao) :
         AsyncTask<Note, Void, Void>() {
 
