@@ -13,6 +13,11 @@ import kotlinx.android.synthetic.main.activity_main.*
 import android.content.Intent
 import android.view.View
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import java.nio.file.Files.delete
+import androidx.recyclerview.widget.ItemTouchHelper
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 
 
 class MainActivity : AppCompatActivity() {
@@ -43,6 +48,41 @@ class MainActivity : AppCompatActivity() {
             //update RecyclerView
             adapter.setNotes(t)
         })
+
+        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
+            0,
+            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+        ) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                noteViewModel.delete(adapter.getNoteAt(viewHolder.adapterPosition))
+                Toast.makeText(this@MainActivity, "Note deleted", Toast.LENGTH_SHORT).show()
+            }
+        }).attachToRecyclerView(recycler_view)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val menuInflater = menuInflater
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.delete_all_notes -> {
+                noteViewModel.deleteAllNotes()
+                Toast.makeText(this, "All notes deleted", Toast.LENGTH_SHORT).show()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
