@@ -18,7 +18,7 @@ import com.luteh.mvvmpractice.R
 import com.luteh.mvvmpractice.data.model.db.Note
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), MainNavigator {
 
     private val TAG = "MainActivity"
 
@@ -26,27 +26,26 @@ class MainActivity : AppCompatActivity() {
     private val EDIT_NOTE_REQUEST = 2
 
     private lateinit var noteViewModel: NoteViewModel
+    private lateinit var adapter: NoteAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        onInit()
+    }
 
-        button_add_note.setOnClickListener {
-            val intent = Intent(this@MainActivity, AddEditNoteActivity::class.java)
-            startActivityForResult(intent, ADD_NOTE_REQUEST)
-        }
+    override fun onInit() {
+        initRecyclerView()
+        initViewModel()
+        onClickComponent()
+    }
 
+    override fun initRecyclerView() {
         recycler_view.layoutManager = LinearLayoutManager(this)
         recycler_view.setHasFixedSize(true)
 
-        val adapter = NoteAdapter()
+        adapter = NoteAdapter()
         recycler_view.adapter = adapter
-
-        noteViewModel = ViewModelProviders.of(this).get(NoteViewModel::class.java)
-        noteViewModel.getAllNoteDatas().observe(this, Observer<List<Note>> { t ->
-            //update RecyclerView
-            adapter.submitList(t)
-        })
 
         ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
             0,
@@ -66,6 +65,23 @@ class MainActivity : AppCompatActivity() {
             }
         }).attachToRecyclerView(recycler_view)
 
+
+    }
+
+    override fun initViewModel() {
+        noteViewModel = ViewModelProviders.of(this).get(NoteViewModel::class.java)
+        noteViewModel.getAllNoteDatas().observe(this, Observer<List<Note>> { t ->
+            //update RecyclerView
+            adapter.submitList(t)
+        })
+    }
+
+    override fun onClickComponent() {
+        button_add_note.setOnClickListener {
+            val intent = Intent(this@MainActivity, AddEditNoteActivity::class.java)
+            startActivityForResult(intent, ADD_NOTE_REQUEST)
+        }
+
         adapter.setOnItemClickListener(object :
             NoteAdapter.OnItemClickListener {
             override fun onItemClick(note: Note) {
@@ -77,6 +93,36 @@ class MainActivity : AppCompatActivity() {
                 startActivityForResult(intent, EDIT_NOTE_REQUEST)
             }
         })
+    }
+
+    override fun onAddNoteResult(data: Intent) {
+        val title = data.getStringExtra(AddEditNoteActivity.EXTRA_TITLE)
+        val description = data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION)
+        val priority = data.getIntExtra(AddEditNoteActivity.EXTRA_PRIORITY, 1)
+
+        val note = Note(title, description, priority)
+        noteViewModel.insert(note)
+
+        Toast.makeText(this, "Note saved", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onEditNoteResult(data: Intent) {
+        val id = data.getIntExtra(AddEditNoteActivity.EXTRA_ID, -1)
+
+        if (id == -1) {
+            Toast.makeText(this, "Note can't be updated", Toast.LENGTH_SHORT).show();
+            return
+        }
+
+        val title = data.getStringExtra(AddEditNoteActivity.EXTRA_TITLE)
+        val description = data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION)
+        val priority = data.getIntExtra(AddEditNoteActivity.EXTRA_PRIORITY, 1)
+
+        val note = Note(title, description, priority)
+        note.id = id
+        noteViewModel.update(note)
+
+        Toast.makeText(this, "Note updated", Toast.LENGTH_SHORT).show();
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -100,31 +146,10 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == ADD_NOTE_REQUEST && resultCode == Activity.RESULT_OK) {
-            val title = data!!.getStringExtra(AddEditNoteActivity.EXTRA_TITLE)
-            val description = data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION)
-            val priority = data.getIntExtra(AddEditNoteActivity.EXTRA_PRIORITY, 1)
-
-            val note = Note(title, description, priority)
-            noteViewModel.insert(note)
-
-            Toast.makeText(this, "Note saved", Toast.LENGTH_SHORT).show()
+            onAddNoteResult(data!!)
         } else if (requestCode == EDIT_NOTE_REQUEST && resultCode == RESULT_OK) {
-            val id = data!!.getIntExtra(AddEditNoteActivity.EXTRA_ID, -1)
+            onEditNoteResult(data!!)
 
-            if (id == -1) {
-                Toast.makeText(this, "Note can't be updated", Toast.LENGTH_SHORT).show();
-                return
-            }
-
-            val title = data.getStringExtra(AddEditNoteActivity.EXTRA_TITLE)
-            val description = data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION)
-            val priority = data.getIntExtra(AddEditNoteActivity.EXTRA_PRIORITY, 1)
-
-            val note = Note(title, description, priority)
-            note.id = id
-            noteViewModel.update(note)
-
-            Toast.makeText(this, "Note updated", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Note not saved", Toast.LENGTH_SHORT).show()
         }
