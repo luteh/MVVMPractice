@@ -11,9 +11,16 @@ import android.widget.Toast
 import android.widget.NumberPicker
 import android.widget.EditText
 import kotlinx.android.synthetic.main.activity_add_note.*
+import android.nfc.NfcAdapter.EXTRA_ID
+import android.nfc.NfcAdapter.EXTRA_ID
+import android.R.attr.data
 
 
-class AddNoteActivity : AppCompatActivity() {
+
+
+
+
+class AddEditNoteActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,7 +30,17 @@ class AddNoteActivity : AppCompatActivity() {
         number_picker_priority!!.maxValue = 10
 
         supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_close)
-        title = "Add Note"
+
+        val intent = intent
+
+        if (intent.hasExtra(EXTRA_ID)) {
+            title = "Edit Note"
+            edit_text_title.setText(intent.getStringExtra(EXTRA_TITLE))
+            edit_text_description.setText(intent.getStringExtra(EXTRA_DESCRIPTION))
+            number_picker_priority.value = intent.getIntExtra(EXTRA_PRIORITY, 1)
+        } else {
+            title = "Add Note"
+        }
     }
 
     private fun saveNote() {
@@ -40,6 +57,11 @@ class AddNoteActivity : AppCompatActivity() {
         data.putExtra(EXTRA_TITLE, title)
         data.putExtra(EXTRA_DESCRIPTION, description)
         data.putExtra(EXTRA_PRIORITY, priority)
+
+        val id = intent.getIntExtra(EXTRA_ID, -1)
+        if (id != -1) {
+            data.putExtra(EXTRA_ID, id)
+        }
 
         setResult(Activity.RESULT_OK, data)
         finish()
@@ -62,6 +84,7 @@ class AddNoteActivity : AppCompatActivity() {
     }
 
     companion object {
+        val EXTRA_ID = "com.codinginflow.architectureexample.EXTRA_ID"
         val EXTRA_TITLE = "com.codinginflow.architectureexample.EXTRA_TITLE"
         val EXTRA_DESCRIPTION = "com.codinginflow.architectureexample.EXTRA_DESCRIPTION"
         val EXTRA_PRIORITY = "com.codinginflow.architectureexample.EXTRA_PRIORITY"

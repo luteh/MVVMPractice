@@ -3,7 +3,6 @@ package com.luteh.mvvmpractice
 import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -11,12 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
 import android.content.Intent
-import android.view.View
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import java.nio.file.Files.delete
 import androidx.recyclerview.widget.ItemTouchHelper
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 
 
@@ -25,6 +20,7 @@ class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
 
     private val ADD_NOTE_REQUEST = 1
+    private val EDIT_NOTE_REQUEST = 2
 
     private lateinit var noteViewModel: NoteViewModel
 
@@ -33,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         button_add_note.setOnClickListener {
-            val intent = Intent(this@MainActivity, AddNoteActivity::class.java)
+            val intent = Intent(this@MainActivity, AddEditNoteActivity::class.java)
             startActivityForResult(intent, ADD_NOTE_REQUEST)
         }
 
@@ -66,6 +62,17 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this@MainActivity, "Note deleted", Toast.LENGTH_SHORT).show()
             }
         }).attachToRecyclerView(recycler_view)
+
+        adapter.setOnItemClickListener(object : NoteAdapter.OnItemClickListener {
+            override fun onItemClick(note: Note) {
+                val intent = Intent(this@MainActivity, AddEditNoteActivity::class.java)
+                intent.putExtra(AddEditNoteActivity.EXTRA_ID, note.id)
+                intent.putExtra(AddEditNoteActivity.EXTRA_TITLE, note.title)
+                intent.putExtra(AddEditNoteActivity.EXTRA_DESCRIPTION, note.description)
+                intent.putExtra(AddEditNoteActivity.EXTRA_PRIORITY, note.priority)
+                startActivityForResult(intent, EDIT_NOTE_REQUEST)
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -89,14 +96,31 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == ADD_NOTE_REQUEST && resultCode == Activity.RESULT_OK) {
-            val title = data!!.getStringExtra(AddNoteActivity.EXTRA_TITLE)
-            val description = data.getStringExtra(AddNoteActivity.EXTRA_DESCRIPTION)
-            val priority = data.getIntExtra(AddNoteActivity.EXTRA_PRIORITY, 1)
+            val title = data!!.getStringExtra(AddEditNoteActivity.EXTRA_TITLE)
+            val description = data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION)
+            val priority = data.getIntExtra(AddEditNoteActivity.EXTRA_PRIORITY, 1)
 
             val note = Note(title, description, priority)
             noteViewModel.insert(note)
 
             Toast.makeText(this, "Note saved", Toast.LENGTH_SHORT).show()
+        } else if (requestCode == EDIT_NOTE_REQUEST && resultCode == RESULT_OK) {
+            val id = data!!.getIntExtra(AddEditNoteActivity.EXTRA_ID, -1)
+
+            if (id == -1) {
+                Toast.makeText(this, "Note can't be updated", Toast.LENGTH_SHORT).show();
+                return
+            }
+
+            val title = data.getStringExtra(AddEditNoteActivity.EXTRA_TITLE)
+            val description = data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION)
+            val priority = data.getIntExtra(AddEditNoteActivity.EXTRA_PRIORITY, 1)
+
+            val note = Note(title, description, priority)
+            note.id = id
+            noteViewModel.update(note)
+
+            Toast.makeText(this, "Note updated", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Note not saved", Toast.LENGTH_SHORT).show()
         }

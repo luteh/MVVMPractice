@@ -14,6 +14,7 @@ import android.view.ViewGroup
  */
 class NoteAdapter : RecyclerView.Adapter<NoteAdapter.NoteHolder>() {
     private var notes: List<Note> = ArrayList()
+    private lateinit var listener: OnItemClickListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteHolder {
         val itemView = LayoutInflater.from(parent.context)
@@ -50,6 +51,21 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.NoteHolder>() {
             textViewTitle = itemView.findViewById(R.id.text_view_title)
             textViewDescription = itemView.findViewById(R.id.text_view_description)
             textViewPriority = itemView.findViewById(R.id.text_view_priority)
+
+            itemView.setOnClickListener {
+                val position = adapterPosition
+                if (listener != null && position != RecyclerView.NO_POSITION) {
+                    listener.onItemClick(notes[position])
+                }
+            }
         }
+    }
+
+    interface OnItemClickListener {
+        fun onItemClick(note: Note)
+    }
+
+    fun setOnItemClickListener(listener: OnItemClickListener) {
+        this.listener = listener
     }
 }
