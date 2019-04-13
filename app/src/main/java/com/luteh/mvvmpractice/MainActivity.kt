@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         noteViewModel = ViewModelProviders.of(this).get(NoteViewModel::class.java)
         noteViewModel.getAllNoteDatas().observe(this, Observer<List<Note>> { t ->
             //update RecyclerView
-            adapter.setNotes(t)
+            adapter.submitList(t)
         })
 
         ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
