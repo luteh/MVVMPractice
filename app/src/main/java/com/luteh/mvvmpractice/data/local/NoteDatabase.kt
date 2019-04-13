@@ -1,4 +1,4 @@
-package com.luteh.mvvmpractice
+package com.luteh.mvvmpractice.data.local
 
 import android.content.Context
 import androidx.room.RoomDatabase
@@ -6,7 +6,8 @@ import androidx.room.Room
 import androidx.room.Database
 import android.os.AsyncTask
 import androidx.sqlite.db.SupportSQLiteDatabase
-import androidx.annotation.NonNull
+import com.luteh.mvvmpractice.data.model.db.Note
+import com.luteh.mvvmpractice.data.local.db.NoteDao
 
 
 /**
@@ -42,7 +43,8 @@ abstract class NoteDatabase : RoomDatabase() {
         private val roomCallback = object : RoomDatabase.Callback() {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
-                PopulateDbAsyncTask(instance!!).execute()
+                PopulateDbAsyncTask(instance!!)
+                    .execute()
             }
         }
 
@@ -54,9 +56,27 @@ abstract class NoteDatabase : RoomDatabase() {
             }
 
             override fun doInBackground(vararg voids: Void): Void? {
-                noteDao.insert(Note("Title 1", "Description 1", 1))
-                noteDao.insert(Note("Title 2", "Description 2", 2))
-                noteDao.insert(Note("Title 3", "Description 3", 3))
+                noteDao.insert(
+                    Note(
+                        "Title 1",
+                        "Description 1",
+                        1
+                    )
+                )
+                noteDao.insert(
+                    Note(
+                        "Title 2",
+                        "Description 2",
+                        2
+                    )
+                )
+                noteDao.insert(
+                    Note(
+                        "Title 3",
+                        "Description 3",
+                        3
+                    )
+                )
                 return null
             }
         }

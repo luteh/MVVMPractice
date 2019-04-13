@@ -1,7 +1,8 @@
-package com.luteh.mvvmpractice
+package com.luteh.mvvmpractice.data.local.db
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.luteh.mvvmpractice.data.model.db.Note
 
 /**
  * Created by Luthfan Maftuh on 12/04/2019.

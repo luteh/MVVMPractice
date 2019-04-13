@@ -1,13 +1,14 @@
-package com.luteh.mvvmpractice
+package com.luteh.mvvmpractice.ui.main
 
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import androidx.annotation.NonNull
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.DiffUtil
+import com.luteh.mvvmpractice.R
+import com.luteh.mvvmpractice.data.model.db.Note
 
 
 /**

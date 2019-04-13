@@ -1,4 +1,4 @@
-package com.luteh.mvvmpractice
+package com.luteh.mvvmpractice.ui.main
 
 import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +13,9 @@ import android.content.Intent
 import androidx.recyclerview.widget.ItemTouchHelper
 import android.view.Menu
 import android.view.MenuItem
+import com.luteh.mvvmpractice.ui.addeditnote.AddEditNoteActivity
+import com.luteh.mvvmpractice.R
+import com.luteh.mvvmpractice.data.model.db.Note
 
 
 class MainActivity : AppCompatActivity() {
@@ -63,7 +66,8 @@ class MainActivity : AppCompatActivity() {
             }
         }).attachToRecyclerView(recycler_view)
 
-        adapter.setOnItemClickListener(object : NoteAdapter.OnItemClickListener {
+        adapter.setOnItemClickListener(object :
+            NoteAdapter.OnItemClickListener {
             override fun onItemClick(note: Note) {
                 val intent = Intent(this@MainActivity, AddEditNoteActivity::class.java)
                 intent.putExtra(AddEditNoteActivity.EXTRA_ID, note.id)

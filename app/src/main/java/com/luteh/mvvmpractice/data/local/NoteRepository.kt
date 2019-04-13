@@ -1,8 +1,10 @@
-package com.luteh.mvvmpractice
+package com.luteh.mvvmpractice.data.local
 
 import android.os.AsyncTask
 import androidx.lifecycle.LiveData
 import android.app.Application
+import com.luteh.mvvmpractice.data.model.db.Note
+import com.luteh.mvvmpractice.data.local.db.NoteDao
 
 
 /**

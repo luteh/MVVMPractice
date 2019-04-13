@@ -1,4 +1,4 @@
-package com.luteh.mvvmpractice
+package com.luteh.mvvmpractice.data.model.db
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

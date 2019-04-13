@@ -1,23 +1,14 @@
-package com.luteh.mvvmpractice
+package com.luteh.mvvmpractice.ui.addeditnote
 
 import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.MenuInflater
 import android.content.Intent
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import android.widget.NumberPicker
-import android.widget.EditText
 import kotlinx.android.synthetic.main.activity_add_note.*
-import android.nfc.NfcAdapter.EXTRA_ID
-import android.nfc.NfcAdapter.EXTRA_ID
-import android.R.attr.data
-
-
-
-
+import com.luteh.mvvmpractice.R
 
 
 class AddEditNoteActivity : AppCompatActivity() {
