@@ -3,7 +3,7 @@ package com.luteh.mvvmpractice.ui.main
 import androidx.lifecycle.LiveData
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import com.luteh.mvvmpractice.data.local.NoteRepository
+import com.luteh.mvvmpractice.data.local.db.NoteRepository
 import com.luteh.mvvmpractice.data.model.db.Note
 
 

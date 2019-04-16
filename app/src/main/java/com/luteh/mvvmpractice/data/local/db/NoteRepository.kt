@@ -1,10 +1,10 @@
-package com.luteh.mvvmpractice.data.local
+package com.luteh.mvvmpractice.data.local.db
 
 import android.os.AsyncTask
 import androidx.lifecycle.LiveData
 import android.app.Application
+import com.luteh.mvvmpractice.data.local.db.dao.NoteDao
 import com.luteh.mvvmpractice.data.model.db.Note
-import com.luteh.mvvmpractice.data.local.db.NoteDao
 
 
 /**
@@ -16,7 +16,8 @@ class NoteRepository(application: Application) {
     private val allNotes: LiveData<List<Note>>
 
     init {
-        val database = NoteDatabase.getInstance(application)
+        val database =
+            NoteDatabase.getInstance(application)
         noteDao = database.noteDao()
         allNotes = noteDao.getAllNotes()
     }

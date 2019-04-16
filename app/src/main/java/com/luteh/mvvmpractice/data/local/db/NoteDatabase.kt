@@ -1,4 +1,4 @@
-package com.luteh.mvvmpractice.data.local
+package com.luteh.mvvmpractice.data.local.db
 
 import android.content.Context
 import androidx.room.RoomDatabase
@@ -6,8 +6,8 @@ import androidx.room.Room
 import androidx.room.Database
 import android.os.AsyncTask
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.luteh.mvvmpractice.data.local.db.dao.NoteDao
 import com.luteh.mvvmpractice.data.model.db.Note
-import com.luteh.mvvmpractice.data.local.db.NoteDao
 
 
 /**

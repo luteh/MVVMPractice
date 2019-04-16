@@ -1,4 +1,4 @@
-package com.luteh.mvvmpractice.data.local.db
+package com.luteh.mvvmpractice.data.local.db.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
